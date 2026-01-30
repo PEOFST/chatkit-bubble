@@ -1,26 +1,35 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ChatKit, useChatKit } from "@openai/chatkit-react";
 import { options } from "./chatkit-options";
+
+const COLLAPSED_SIZE = { width: 80, height: 80 };
+const EXPANDED_SIZE = { width: 420, height: 720 };
 
 export function ChatBubble() {
   const [open, setOpen] = useState(false);
 
   const { control } = useChatKit({
-  ...options,
-  api: {
-    async getClientSecret(existing) {
-      if (existing) return existing;
-      const res = await fetch("/api/chatkit/session", { method: "POST" });
-      const { client_secret } = await res.json();
-      return client_secret;
+    ...options,
+    api: {
+      async getClientSecret(existing) {
+        if (existing) return existing;
+        const res = await fetch("/api/chatkit/session", { method: "POST" });
+        const { client_secret } = await res.json();
+        return client_secret;
+      },
     },
-  },
-});
+  });
 
+  useEffect(() => {
+    const size = open ? EXPANDED_SIZE : COLLAPSED_SIZE;
+    window.parent?.postMessage(
+      { type: "chatkit-bubble-resize", width: size.width, height: size.height },
+      "*"
+    );
+  }, [open]);
 
   return (
     <>
-      {/* BUBLINA */}
       <button
         onClick={() => setOpen((v) => !v)}
         style={{
@@ -40,7 +49,6 @@ export function ChatBubble() {
         Chat
       </button>
 
-      {/* CHAT PANEL */}
       {open && (
         <div
           style={{
@@ -56,7 +64,6 @@ export function ChatBubble() {
             background: "#fff",
           }}
         >
-          {/* 👇 PRESNE SEM PATRÍ TOTO */}
           <ChatKit control={control} />
         </div>
       )}
