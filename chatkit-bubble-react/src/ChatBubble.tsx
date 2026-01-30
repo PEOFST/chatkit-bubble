@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { ChatKit, useChatKit } from "@openai/chatkit-react";
 import { options } from "./chatkit-options";
 
-const COLLAPSED_SIZE = { width: 80, height: 80 };
+const COLLAPSED_SIZE = { width: 100, height: 100 };
 const EXPANDED_SIZE = { width: 420, height: 720 };
 
 export function ChatBubble() {
@@ -34,8 +34,8 @@ export function ChatBubble() {
         onClick={() => setOpen((v) => !v)}
         style={{
           position: "fixed",
-          bottom: 20,
-          right: 20,
+          bottom: 12,
+          right: 12,
           borderRadius: 999,
           padding: "14px 18px",
           fontWeight: 700,
