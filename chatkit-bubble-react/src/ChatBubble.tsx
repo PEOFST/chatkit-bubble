@@ -66,7 +66,7 @@ export function ChatBubble() {
           border: "none",
           cursor: "pointer",
           zIndex: 9999,
-          background: "#0b2f7f",
+          background: "#0c45ed",
           color: "#fff",
           fontSize: 22,
           lineHeight: 1,
