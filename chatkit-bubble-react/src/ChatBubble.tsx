@@ -7,8 +7,9 @@ const EXPANDED_SIZE = { width: 420, height: 720 };
 
 export function ChatBubble() {
   const [open, setOpen] = useState(false);
-  const [showLoader, setShowLoader] = useState(false);
   const [panelVisible, setPanelVisible] = useState(false);
+  const [loaderVisible, setLoaderVisible] = useState(false);
+  const [loaderOpacity, setLoaderOpacity] = useState(0);
 
   const { control } = useChatKit({
     ...options,
@@ -33,17 +34,21 @@ export function ChatBubble() {
   useEffect(() => {
     if (!open) {
       setPanelVisible(false);
-      setShowLoader(false);
+      setLoaderVisible(false);
+      setLoaderOpacity(0);
       return;
     }
 
-    setShowLoader(true);
+    setLoaderVisible(true);
+    setLoaderOpacity(1);
     const raf = requestAnimationFrame(() => setPanelVisible(true));
-    const t = setTimeout(() => setShowLoader(false), 700);
+    const fade = setTimeout(() => setLoaderOpacity(0), 700);
+    const hide = setTimeout(() => setLoaderVisible(false), 950);
 
     return () => {
       cancelAnimationFrame(raf);
-      clearTimeout(t);
+      clearTimeout(fade);
+      clearTimeout(hide);
     };
   }, [open]);
 
@@ -86,7 +91,7 @@ export function ChatBubble() {
             transition: "opacity 220ms ease, transform 220ms ease",
           }}
         >
-          {showLoader && (
+          {loaderVisible && (
             <div
               style={{
                 position: "absolute",
@@ -95,25 +100,21 @@ export function ChatBubble() {
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                gap: 12,
-                fontWeight: 600,
-                color: "#444",
                 zIndex: 1,
-                opacity: showLoader ? 1 : 0,
-                transition: "opacity 200ms ease",
+                opacity: loaderOpacity,
+                transition: "opacity 260ms ease",
               }}
             >
               <span
                 style={{
-                  width: 18,
-                  height: 18,
+                  width: 28,
+                  height: 28,
                   borderRadius: "50%",
-                  border: "2px solid #e5e5e5",
+                  border: "3px solid #e5e5e5",
                   borderTopColor: "#f20226",
                   animation: "chatkit-spin 0.8s linear infinite",
                 }}
               />
-              Načítavam chat…
             </div>
           )}
           <style>
