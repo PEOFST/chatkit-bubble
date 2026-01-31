@@ -1,5 +1,3 @@
-import crypto from "crypto";
-
 export default async function handler(req, res) {
   if (req.method !== "POST") return res.status(405).json({ error: "Method not allowed" });
 
@@ -10,8 +8,6 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: "Missing env vars (WORKFLOW_ID / OPENAI_API_KEY)" });
   }
 
-  const user = `web-${crypto.randomUUID()}`;
-
   const r = await fetch("https://api.openai.com/v1/chatkit/sessions", {
     method: "POST",
     headers: {
@@ -21,7 +17,7 @@ export default async function handler(req, res) {
     },
     body: JSON.stringify({
       workflow: { id: workflowId },
-      user,
+      user: "web-anon",
     }),
   });
 
