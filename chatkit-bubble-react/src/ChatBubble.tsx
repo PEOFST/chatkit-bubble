@@ -124,7 +124,7 @@ export function ChatBubble() {
                   height: 28,
                   borderRadius: "50%",
                   border: "3px solid #e5e5e5",
-                  borderTopColor: "#f20226",
+                  borderTopColor: "#0c45ed",
                   animation: "chatkit-spin 0.8s linear infinite",
                 }}
               />
