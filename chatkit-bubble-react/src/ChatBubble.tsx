@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ChatKit, useChatKit } from "@openai/chatkit-react";
 import { options } from "./chatkit-options";
 
@@ -10,6 +10,9 @@ export function ChatBubble() {
   const [panelVisible, setPanelVisible] = useState(false);
   const [loaderVisible, setLoaderVisible] = useState(false);
   const [loaderOpacity, setLoaderOpacity] = useState(0);
+  const [agentDelayVisible, setAgentDelayVisible] = useState(false);
+  const [agentDelayOpacity, setAgentDelayOpacity] = useState(0);
+  const delayTimers = useRef<{ fade?: number; hide?: number }>({});
 
   const { control } = useChatKit({
     ...options,
@@ -20,6 +23,24 @@ export function ChatBubble() {
         const { client_secret } = await res.json();
         return client_secret;
       },
+    },
+    onResponseStart: () => {
+      if (!open) return;
+
+      if (delayTimers.current.fade) clearTimeout(delayTimers.current.fade);
+      if (delayTimers.current.hide) clearTimeout(delayTimers.current.hide);
+
+      const delayMs = 5000 + Math.floor(Math.random() * 10001);
+      setAgentDelayVisible(true);
+      setAgentDelayOpacity(1);
+
+      delayTimers.current.fade = window.setTimeout(() => {
+        setAgentDelayOpacity(0);
+      }, delayMs);
+
+      delayTimers.current.hide = window.setTimeout(() => {
+        setAgentDelayVisible(false);
+      }, delayMs + 260);
     },
   });
 
@@ -36,6 +57,8 @@ export function ChatBubble() {
       setPanelVisible(false);
       setLoaderVisible(false);
       setLoaderOpacity(0);
+      setAgentDelayVisible(false);
+      setAgentDelayOpacity(0);
       return;
     }
 
@@ -122,6 +145,32 @@ export function ChatBubble() {
                 style={{
                   width: 28,
                   height: 28,
+                  borderRadius: "50%",
+                  border: "3px solid #e5e5e5",
+                  borderTopColor: "#0c45ed",
+                  animation: "chatkit-spin 0.8s linear infinite",
+                }}
+              />
+            </div>
+          )}
+          {agentDelayVisible && (
+            <div
+              style={{
+                position: "absolute",
+                inset: 0,
+                background: "#fff",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                zIndex: 1,
+                opacity: agentDelayOpacity,
+                transition: "opacity 260ms ease",
+              }}
+            >
+              <span
+                style={{
+                  width: 30,
+                  height: 30,
                   borderRadius: "50%",
                   border: "3px solid #e5e5e5",
                   borderTopColor: "#0c45ed",
