@@ -70,9 +70,20 @@ export function ChatBubble() {
           color: "#fff",
           fontSize: 22,
           lineHeight: 1,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
         }}
       >
-        💬
+        <img
+          src="/chat-icon.jpg"
+          alt="Chat"
+          style={{
+            width: 28,
+            height: 28,
+            display: "block",
+          }}
+        />
       </button>
 
       {open && (
