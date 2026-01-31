@@ -76,11 +76,11 @@ export function ChatBubble() {
         }}
       >
         <img
-          src="/chat-icon.jpg"
+          src="/chat-icon.png"
           alt="Chat"
           style={{
-            width: 28,
-            height: 28,
+            width: 30,
+            height: 30,
             display: "block",
           }}
         />
