@@ -64,6 +64,20 @@ export function ChatBubble() {
             background: "#fff",
           }}
         >
+          <div
+            style={{
+              position: "absolute",
+              inset: 0,
+              background: "#fff",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontWeight: 600,
+              color: "#444",
+            }}
+          >
+            Načítavam chat…
+          </div>
           <ChatKit control={control} />
         </div>
       )}
