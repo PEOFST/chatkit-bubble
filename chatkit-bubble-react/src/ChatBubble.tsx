@@ -66,11 +66,13 @@ export function ChatBubble() {
           border: "none",
           cursor: "pointer",
           zIndex: 9999,
-          background: "#f20226",
+          background: "#0b2f7f",
           color: "#fff",
+          fontSize: 22,
+          lineHeight: 1,
         }}
       >
-        Chat
+        💬
       </button>
 
       {open && (
