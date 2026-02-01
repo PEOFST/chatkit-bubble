@@ -21,6 +21,19 @@ export function ChatBubble() {
         return client_secret;
       },
     },
+    onClientTool: async (toolCall) => {
+      if (toolCall.name !== "sleep") {
+        return { ok: false, error: "Unknown tool" };
+      }
+
+      const seconds = Number(toolCall.params?.seconds ?? 0);
+      const res = await fetch("/api/tools/sleep", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ seconds }),
+      });
+      return await res.json();
+    },
   });
 
   useEffect(() => {
