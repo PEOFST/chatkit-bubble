@@ -5,7 +5,7 @@ export default async function handler(req, res) {
   const apiKey = process.env.OPENAI_API_KEY;
   const greeting =
     process.env.CHATKIT_GREETING ||
-    "Ahoj! Som tvoj AI sprievodca. Ako ti môžem pomôcť s výberom kajaku?";
+    "are you looking for a new kayak or just exploring options ?";
 
   if (!workflowId || !apiKey) {
     return res.status(500).json({ error: "Missing env vars (WORKFLOW_ID / OPENAI_API_KEY)" });
