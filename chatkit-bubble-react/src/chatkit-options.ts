@@ -35,7 +35,7 @@ export const options: Partial<ChatKitOptions> = {
     },
   },
   startScreen: {
-    greeting: "are you looking for a new kayak or just exploring options ?",
+    greeting: "Are you looking for a new kayak or just exploring options ?",
     prompts: [],
   },
   // Optional fields not shown: locale, initialThread, threadItemActions, header, onClientTool, entities, widgets
