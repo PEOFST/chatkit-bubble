@@ -35,7 +35,8 @@ export const options: Partial<ChatKitOptions> = {
     },
   },
   startScreen: {
-    greeting: "Let's pick your kayak !",
+    // Remove the hero greeting so the start screen appears empty.
+    greeting: "",
     prompts: [],
   },
   // Optional fields not shown: locale, initialThread, threadItemActions, header, onClientTool, entities, widgets
