@@ -33,7 +33,7 @@ export function ChatBubble() {
     return sessionPromiseRef.current;
   };
 
-  const { control } = useChatKit({
+  const { control, setThreadId } = useChatKit({
     ...options,
     initialThread: initialThreadId ?? null,
     api: {
@@ -57,6 +57,12 @@ export function ChatBubble() {
       return await res.json();
     },
   });
+
+  useEffect(() => {
+    if (initialThreadId) {
+      setThreadId(initialThreadId);
+    }
+  }, [initialThreadId, setThreadId]);
 
   useEffect(() => {
     const size = open ? EXPANDED_SIZE : COLLAPSED_SIZE;
