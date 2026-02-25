@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ChatKit, useChatKit } from "@openai/chatkit-react";
 import { options } from "./chatkit-options";
 
@@ -10,15 +10,37 @@ export function ChatBubble() {
   const [panelVisible, setPanelVisible] = useState(false);
   const [loaderVisible, setLoaderVisible] = useState(false);
   const [loaderOpacity, setLoaderOpacity] = useState(0);
+  const [initialThreadId, setInitialThreadId] = useState<string | null>(null);
+  const [sessionReady, setSessionReady] = useState(false);
+  const sessionPromiseRef = useRef<Promise<{ client_secret: string; thread_id: string | null }> | null>(null);
+
+  const loadSession = () => {
+    if (!sessionPromiseRef.current) {
+      sessionPromiseRef.current = fetch("/api/chatkit/session", { method: "POST" })
+        .then(async (res) => {
+          const data = await res.json();
+          setInitialThreadId(data.thread_id ?? null);
+          setSessionReady(true);
+          return data;
+        })
+        .catch((err) => {
+          console.error("Failed to load ChatKit session", err);
+          sessionPromiseRef.current = null;
+          setSessionReady(true);
+          throw err;
+        });
+    }
+    return sessionPromiseRef.current;
+  };
 
   const { control } = useChatKit({
     ...options,
+    initialThread: initialThreadId ?? null,
     api: {
       async getClientSecret(existing) {
         if (existing) return existing;
-        const res = await fetch("/api/chatkit/session", { method: "POST" });
-        const { client_secret } = await res.json();
-        return client_secret;
+        const session = await loadSession();
+        return session.client_secret;
       },
     },
     onClientTool: async (toolCall) => {
@@ -42,6 +64,12 @@ export function ChatBubble() {
       { type: "chatkit-bubble-resize", width: size.width, height: size.height },
       "*"
     );
+  }, [open]);
+
+  useEffect(() => {
+    if (open) {
+      loadSession();
+    }
   }, [open]);
 
   useEffect(() => {
@@ -117,7 +145,7 @@ export function ChatBubble() {
             transition: "opacity 220ms ease, transform 220ms ease",
           }}
         >
-          {loaderVisible && (
+          {(loaderVisible || !sessionReady) && (
             <div
               style={{
                 position: "absolute",
@@ -127,7 +155,7 @@ export function ChatBubble() {
                 alignItems: "center",
                 justifyContent: "center",
                 zIndex: 1,
-                opacity: loaderOpacity,
+                opacity: loaderVisible ? loaderOpacity : 1,
                 transition: "opacity 260ms ease",
               }}
             >
@@ -151,7 +179,7 @@ export function ChatBubble() {
               }
             `}
           </style>
-          <ChatKit control={control} />
+          {sessionReady && <ChatKit control={control} />}
         </div>
       )}
     </>
